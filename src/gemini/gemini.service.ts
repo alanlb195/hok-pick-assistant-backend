@@ -1,29 +1,33 @@
 import { Injectable } from '@nestjs/common';
+import { Response } from 'express';
+
+// dtos
+import { HeroInsightChatUseCase } from './use-cases/hero-insight-chat.use.case';
+import { GeneratePickDto } from './dto/request/generate-pick.dto';
 
 // Use cases
-import { GenerateTextWithConfig } from './use-cases/generate-text-with-config.use-case';
-import { GenerateTextWithInstructions } from './use-cases/generate-text-with-instructions.use-case';
-import { GeneratePickRecommendation } from './use-cases/generate-pick-recommendation.use.case';
+import { GeneratePickRecommendationStream } from './use-cases/generate-pick-recommendation-stream.use.case';
+import { InsightChatRecommendationDto } from './dto/request/insight-chat-recommendation.dto';
 
 @Injectable()
 export class GeminiService {
+  constructor(
+    private readonly generatePickRecommendationStream: GeneratePickRecommendationStream,
+    private readonly heroInsightChatUseCase: HeroInsightChatUseCase,
+  ) { }
 
-    constructor(
-        private readonly generateTextWithConfig: GenerateTextWithConfig,
-        private readonly generateTextWithInstructions: GenerateTextWithInstructions,
-        private readonly generatePickRecommendation: GeneratePickRecommendation
-    ) { }
+  async executeGeneratePickRecommendationStream(
+    data: GeneratePickDto,
+    res: Response
+  ) {
+    return await this.generatePickRecommendationStream.execute(data, res);
+  }
 
-    async generateWithConfig(prompt: string) {
-        return await this.generateTextWithConfig.execute(prompt);
-    }
-
-    async generateWithInstructions(prompt: string): Promise<string> {
-        return await this.generateTextWithInstructions.execute(prompt);
-    }
-
-    async recommendPick(position: number, allies: string[], enemies: string[], role: string, language: string): Promise<string> {
-        return await this.generatePickRecommendation.execute({ position, allies, enemies, role, language});
-    }
+  async streamHeroInsightChatUseCase(
+    data: InsightChatRecommendationDto,
+    res: Response
+  ) {
+    return await this.heroInsightChatUseCase.executeStream(data, res);
+  }
 
 }

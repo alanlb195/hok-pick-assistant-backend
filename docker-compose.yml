@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+
+  db-service:
+    image: postgres:17.4
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: hok-db
+    container_name: hok-db
+    volumes:
+      - /Users/home/Desktop/docker-data-hok_db/db-data:/var/lib/postgresql/data
