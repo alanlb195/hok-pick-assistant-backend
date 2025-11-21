@@ -7,52 +7,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model hero_skills {
-  skill_id    Int      @id
-  hero_id     Int
-  skill_name  String?
-  skill_icon  String?
-  skill_desc  String?
-  skill_cd    Int?
-  skill_video String?
-  skill_tags  String[]
-  heroes      heroes   @relation(fields: [hero_id], references: [hero_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_hero_skills_hero_id")
+model Hero {
+  id            Int     @id
+  name          String?
+  mainJob       String?
+  recommendRoad String?
+  image         String?
+
+  counters  HeroCounter[] @relation("HeroCounters")
+  counterOf HeroCounter[] @relation("CounterRelations")
+  synergies HeroSynergy[] @relation("HeroSynergies")
+  synergyOf HeroSynergy[] @relation("SynergyRelations")
 }
 
-model heroes {
-  hero_id                                          Int              @id
-  hero_name                                        String?
-  icon                                             String?
-  main_job_name                                    String?
-  recommend_road_name                              String?
-  hero_cover                                       String?
-  hero_world_icon                                  String?
-  hot                                              String?
-  win_rate                                         String?
-  match_rate                                       String?
-  ban_rate                                         String?
-  hero_image                                       String?
-  hero_counters_hero_counters_counter_idToheroes   hero_counters[]  @relation("hero_counters_counter_idToheroes")
-  hero_counters_hero_counters_hero_idToheroes      hero_counters[]  @relation("hero_counters_hero_idToheroes")
-  hero_skills                                      hero_skills[]
-  hero_synergies_hero_synergies_hero_idToheroes    hero_synergies[] @relation("hero_synergies_hero_idToheroes")
-  hero_synergies_hero_synergies_synergy_idToheroes hero_synergies[] @relation("hero_synergies_synergy_idToheroes")
+model HeroCounter {
+  id        Int     @id @default(autoincrement())
+  heroId    Int
+  counterId Int
+  reason    String?
+
+  hero    Hero @relation("HeroCounters", fields: [heroId], references: [id], onDelete: Cascade)
+  counter Hero @relation("CounterRelations", fields: [counterId], references: [id], onDelete: Cascade)
 }
 
-model hero_counters {
-  id                                      Int     @id @default(autoincrement())
-  hero_id                                 Int
-  counter_id                              Int
-  reason                                  String?
-  heroes_hero_counters_counter_idToheroes heroes  @relation("hero_counters_counter_idToheroes", fields: [counter_id], references: [hero_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_counter")
-  heroes_hero_counters_hero_idToheroes    heroes  @relation("hero_counters_hero_idToheroes", fields: [hero_id], references: [hero_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_hero")
-}
+model HeroSynergy {
+  id        Int     @id @default(autoincrement())
+  heroId    Int
+  synergyId Int
+  reason    String?
 
-model hero_synergies {
-  id                                       Int     @id @default(autoincrement())
-  hero_id                                  Int
-  synergy_id                               Int
-  reason                                   String?
-  heroes_hero_synergies_hero_idToheroes    heroes  @relation("hero_synergies_hero_idToheroes", fields: [hero_id], references: [hero_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_hero_synergy")
-  heroes_hero_synergies_synergy_idToheroes heroes  @relation("hero_synergies_synergy_idToheroes", fields: [synergy_id], references: [hero_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_synergy")
+  hero    Hero @relation("HeroSynergies", fields: [heroId], references: [id], onDelete: Cascade)
+  synergy Hero @relation("SynergyRelations", fields: [synergyId], references: [id], onDelete: Cascade)
 }

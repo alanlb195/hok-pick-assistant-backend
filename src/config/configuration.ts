@@ -6,7 +6,19 @@ class EnvironmentVariables {
     PORT: number;
 
     @IsString()
+    HOST_API: string;
+
+    @IsString()
     GEMINI_API_KEY: string;
+
+    @IsString()
+    DATABASE_URL: string;
+
+    @IsString()
+    QDRANT_HOST: string;
+
+    @IsString()
+    QDRANT_PORT: string;
 }
 
 export function validate(config: Record<string, unknown>) {

@@ -2,24 +2,33 @@ import { Module } from '@nestjs/common';
 import { GeminiService } from './gemini.service';
 import { GeminiController } from './gemini.controller';
 
-import { GeminiAIClient } from 'src/lib/gemini-ai-client';
-
 import { PrismaModule } from 'src/prisma/prisma.module';
 
 // use cases
-import { GeneratePickRecommendationStream } from './use-cases/generate-pick-recommendation-stream.use.case';
-import { HeroInsightChatUseCase } from './use-cases/hero-insight-chat.use.case';
+import { GeneratePickRecommendationStream } from './use-cases/generate-pick-recommendation-stream.usecase';
+import { HeroInsightChatUseCase } from './use-cases/hero-insight-chat.usecase';
+import { AnalyzeImageUseCase } from './use-cases/analyze-image.usecase';
+import { GeminiAiClientModule } from 'src/integrations/gemini/gemini-client.module';
+
+// service providers
+// import { GeminiAIClient } from 'src/integrations/gemini/gemini-client.service';
+// import { QdrantService } from 'src/integrations/qdrant/qdrant.service';
 
 
 @Module({
   providers: [
     GeminiService,
-    GeminiAIClient,
     GeneratePickRecommendationStream,
     HeroInsightChatUseCase,
+    AnalyzeImageUseCase,
+    // GeminiAIClient,
+    // QdrantService,
   ],
   controllers: [GeminiController],
   exports: [GeminiService],
-  imports: [PrismaModule],
+  imports: [
+    PrismaModule,
+    GeminiAiClientModule,
+  ],
 })
 export class GeminiModule { }

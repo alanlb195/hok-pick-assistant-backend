@@ -9,7 +9,7 @@ async function bootstrap() {
   const logger = new Logger('bootstrap');
   const configService = app.get(ConfigService);
 
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('api');
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,

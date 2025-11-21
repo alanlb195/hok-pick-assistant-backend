@@ -1,17 +1,26 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { GeminiService } from './gemini.service';
-import { ApiTags, ApiOperation, ApiBody, ApiOkResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { Response } from 'express';
 
 // dtos
 import { GeneratePickDto } from './dto/request/generate-pick.dto';
 import { InsightChatRecommendationDto } from './dto/request/insight-chat-recommendation.dto';
+import { AnalyzeImageDto } from './dto/request/analize-image.dto';
 
 @ApiTags('Gemini')
 @Controller('gemini')
 export class GeminiController {
     constructor(private readonly geminiService: GeminiService) { }
 
+    @Post('analyze-image')
+    @ApiOperation({ summary: 'Analiza una imagen y devuelve una respuesta de Gemini' })
+    @ApiBody({ type: AnalyzeImageDto })
+    async analyzeImage(@Body() body: AnalyzeImageDto): Promise<string> {
+        const { base64Image, prompt } = body;
+        return this.geminiService.analyzeImage(base64Image, prompt);
+    }
+    
     @Post('stream-pick')
     @ApiOperation({
         summary: 'Generar recomendaciones de personajes usando text/event-stream',
