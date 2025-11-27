@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// HEROES
 model Hero {
   id            Int     @id
   name          String?
@@ -18,6 +19,7 @@ model Hero {
   counterOf HeroCounter[] @relation("CounterRelations")
   synergies HeroSynergy[] @relation("HeroSynergies")
   synergyOf HeroSynergy[] @relation("SynergyRelations")
+  skills    Skill[]
 }
 
 model HeroCounter {
@@ -38,4 +40,93 @@ model HeroSynergy {
 
   hero    Hero @relation("HeroSynergies", fields: [heroId], references: [id], onDelete: Cascade)
   synergy Hero @relation("SynergyRelations", fields: [synergyId], references: [id], onDelete: Cascade)
+}
+
+// STAT
+model Stat {
+  id      Int    @id @default(autoincrement())
+  code    String @unique // Ej: "PhysicalAttack"
+  es_name String
+
+  // futuro posible agregar en_name, fr_name, category, etc.
+  skillAttributes SkillAttribute[]
+  arcanaStats     ArcanaStat[]
+}
+
+// ARCANA
+model Arcana {
+  id    Int          @id @default(autoincrement())
+  name  String
+  color ArcanaColor // azul, rojo, verde
+  stats ArcanaStat[]
+}
+
+enum ArcanaColor {
+  Red
+  Green
+  Blue
+}
+
+model ArcanaStat {
+  id       Int   @id @default(autoincrement())
+  arcanaId Int
+  statId   Int
+  value    Float
+
+  arcana Arcana @relation(fields: [arcanaId], references: [id], onDelete: Cascade)
+  stat   Stat   @relation(fields: [statId], references: [id], onDelete: Restrict)
+}
+
+// SKILLS
+model Skill {
+  id             Int        @id @default(autoincrement())
+  heroId         Int
+  es_name        String
+  tag            SkillTag[]
+  description    String? // descripción principal
+  extraInfo      String? // texto gris, notas técnicas
+  recommendation String? // guía para jugadores / recomendación
+  image          String?
+  order          Int
+
+  // campos opcionales simples
+  attributes SkillAttribute[]
+  hero       Hero             @relation(fields: [heroId], references: [id], onDelete: Cascade)
+}
+
+model Tag {
+  id         Int        @id @default(autoincrement())
+  code       String
+  es_name    String
+  background String // color agrupador de tags
+  skillTags  SkillTag[]
+}
+
+model SkillTag {
+  id    Int @id @default(autoincrement())
+  skillId Int?
+  tagId Int
+
+  tag     Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  skill   Skill? @relation(fields: [skillId], references: [id])
+}
+
+model SkillAttribute {
+  id      Int @id @default(autoincrement())
+  skillId Int
+  statId  Int
+
+  baseValue Float?
+
+  level1 Float?
+  level2 Float?
+  level3 Float?
+  level4 Float?
+  level5 Float?
+  level6 Float?
+
+  unit String? // "%", "pts" etc.
+
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  stat  Stat? @relation(fields: [statId], references: [id])
 }

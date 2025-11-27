@@ -5,8 +5,4 @@ export class AnalyzeImageDto {
     @IsString()
     @IsNotEmpty()
     base64Image: string;
-
-    @IsString()
-    @IsNotEmpty()
-    prompt: string;
 }

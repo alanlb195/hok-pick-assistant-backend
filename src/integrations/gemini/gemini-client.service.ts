@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GoogleGenAI } from '@google/genai';
+import { zodToJsonSchema } from "zod-to-json-schema";
 import fs from 'fs';
 
 export enum TaskTypes {
@@ -18,6 +19,7 @@ export enum TaskTypes {
 export class GeminiAIClient {
     private ai: GoogleGenAI;
     private modelName = 'gemini-2.5-flash';
+    private imageModel = 'gemini-2.5-flash-image';
 
 
     constructor(private configService: ConfigService) {
@@ -114,7 +116,7 @@ export class GeminiAIClient {
         ];
 
         const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
+            model: this.modelName,
             contents: contents,
         });
         console.log(response.text);
@@ -125,12 +127,14 @@ export class GeminiAIClient {
      * @param base64Image Base64 de la imagen (sin encabezado data URL).
      * @param prompt Instrucción para Gemini sobre qué hacer con la imagen.
      * @param mimeType Tipo MIME de la imagen, por defecto "image/jpeg"
+     * @param responseJsonSchema El tipo de esquema de respuesta que se va a dar.
      * @returns string con la respuesta del modelo (por ejemplo, una descripción).
      */
     async analyzeImageFromBase64(
         base64Image: string,
         prompt: string,
-        mimeType: string = 'image/jpeg'
+        mimeType: string = 'image/jpeg',
+        responseJsonSchema: any,
     ): Promise<string> {
         const contents = [
             {
@@ -145,8 +149,13 @@ export class GeminiAIClient {
         ];
 
         const response = await this.ai.models.generateContent({
-            model: 'gemini-1.5-flash', // o gemini-2.5-flash si lo tienes disponible
+            model: this.imageModel,
             contents,
+            config: {
+                responseMimeType: 'application/json',
+                responseJsonSchema: zodToJsonSchema(responseJsonSchema),
+
+            }
         });
 
         return response.text ?? '';

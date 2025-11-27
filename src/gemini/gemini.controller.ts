@@ -16,9 +16,9 @@ export class GeminiController {
     @Post('analyze-image')
     @ApiOperation({ summary: 'Analiza una imagen y devuelve una respuesta de Gemini' })
     @ApiBody({ type: AnalyzeImageDto })
-    async analyzeImage(@Body() body: AnalyzeImageDto): Promise<string> {
-        const { base64Image, prompt } = body;
-        return this.geminiService.analyzeImage(base64Image, prompt);
+    async analyzeImage(@Body() body: AnalyzeImageDto) {
+        const { base64Image } = body;
+        return this.geminiService.analyzeImage(base64Image);
     }
     
     @Post('stream-pick')

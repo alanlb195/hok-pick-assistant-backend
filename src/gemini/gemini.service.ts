@@ -18,8 +18,8 @@ export class GeminiService {
     private readonly analyzeImageUseCase: AnalyzeImageUseCase
   ) { }
 
-  async analyzeImage(base64Image: string, prompt: string): Promise<string> {
-    return await this.analyzeImageUseCase.execute({ base64Image, prompt });
+  async analyzeImage(base64Image: string): Promise<string> {
+    return await this.analyzeImageUseCase.execute({ base64Image });
   }
 
   async executeGeneratePickRecommendationStream(

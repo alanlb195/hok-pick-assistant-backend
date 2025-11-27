@@ -24,4 +24,11 @@ export class HeroController {
     return this.heroesService.getHero(id);
   }
 
+
+  @Get('/form/schema')
+  getHeroFormSchema() {
+    return this.heroesService.getHeroFormSchema();
+  }
+
+
 }

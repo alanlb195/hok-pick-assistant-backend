@@ -44,4 +44,46 @@ export class HeroService {
         return hero;
     }
 
+
+    getHeroFormSchema() {
+        return [
+            {
+                type: "text",
+                name: "name",
+                label: "Hero Name",
+                placeholder: "Enter hero name",
+                value: "",
+                validations: [
+                    { type: "required" },
+                    { type: "minLength", value: 2 }
+                ]
+            },
+            {
+                type: "text",
+                name: "mainJob",
+                label: "Main Job",
+                placeholder: "e.g., Fighter, Mage",
+                value: ""
+            },
+            {
+                type: "text",
+                name: "recommendRoad",
+                label: "Recommended Road",
+                placeholder: "e.g., Jungle, Mid, Support",
+                value: ""
+            },
+            {
+                type: "text",
+                name: "image",
+                label: "Image URL",
+                placeholder: "https://...",
+                value: "",
+                validations: [
+                    { type: "required" }
+                ]
+            }
+        ];
+    }
+
+
 }
